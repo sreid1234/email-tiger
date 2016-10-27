@@ -22,6 +22,11 @@ app.use(express.static('static'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+app.set('port', (process.env.PORT || 5000));
+app.listen(app.get('port'), function() {
+  console.log("Node app is running at localhost:" + app.get('port'));
+  });
+
 // Need JSON body parser for most API responses
 app.use(bodyParser.json());
 // Set up cookies and sessions to save tokens
