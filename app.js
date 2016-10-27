@@ -630,18 +630,18 @@ app.get('/deleteitem', function(req, res) {
   });
 });
 
-// Start the server
-var https = require('https');
-var fs = require('fs');
-
-var options = {
-   key: fs.readFileSync('./key.pem', 'utf8'),
-   cert: fs.readFileSync('./cert.crt', 'utf8')
-};
-
-https.createServer(options, app).listen(3000, function () {
-   console.log('Started!');
-});
+// // Start the server
+// var https = require('https');
+// var fs = require('fs');
+//
+// var options = {
+//    key: fs.readFileSync('./key.pem', 'utf8'),
+//    cert: fs.readFileSync('./cert.crt', 'utf8')
+// };
+//
+// https.createServer(options, app).listen(3000, function () {
+//    console.log('Started!');
+// });
 
 // Start the server
 // var https = require('https');
