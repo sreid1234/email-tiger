@@ -527,16 +527,17 @@ app.get('/sync', function(req, res) {
  // });
 
   // call the Outlook API each day
-  var rule = new schedule.RecurrenceRule();
+  // var rule = new schedule.RecurrenceRule();
+
   // rule.dayOfWeek = [0, new schedule.Range(0, 7)];
   // rule.hour = 7;
   //rule.minute = 32;
-  rule.second = 10;
+  // rule.second = 10;
 
-  var j = schedule.scheduleJob(rule, function(){
+  // var j = schedule.scheduleJob(rule, function(){
    //console.log("Is this shit on?");
-   makeCall(apiOptions);
- });
+ makeCall(apiOptions);
+ // });
 
 });
 
