@@ -1,6 +1,6 @@
 var clientId = 'c29d1907-a227-47d0-b64f-44e1aaba5e2b';
 var clientSecret = 'z2CpMizw5KoPsiLqgURysKW';
-var redirectUri = 'https://email-tiger-2.herokuapp.com/';
+var redirectUri = 'https://email-tiger-2.herokuapp.com/authorize';
 
 var scopes = [
   'openid',
