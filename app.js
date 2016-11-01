@@ -483,13 +483,13 @@ app.get('/sync', function(req, res) {
             var transporter = nodemailer.createTransport({
                 service: 'Gmail',
                 auth: {
-                        user: 'sreid1234@gmail.com', // Your email id
-                        pass: 'samuel93' // Your password
+                        user: 'unread@email-tiger.com', // Your email id
+                        pass: 'SamTiger9' // Your password
                     }
                 });
 
             var mailOptions = {
-                from: '<sreid1234@gmail.com>', // sender address
+                from: '<unread@email-tiger.com>', // sender address
                 to: 'sreid@teampareto.com', // list of receivers
                 subject: 'Email Tiger', // Subject line
                 //text: JSON.stringify(unReadEmails), // plaintext body
