@@ -9,7 +9,16 @@ var querystring = require('querystring');
 var outlook = require('node-outlook');
 var nodemailer = require('nodemailer');
 var schedule = require('node-schedule');
-//var Client = require('node-rest-client').Client;
+
+app.use(bodyParser.urlencoded({extended: true}));
+
+var MongoClient = require('mongodb').MongoClient;
+
+MongoClient.connect('mongodb://sreid9:Reidlynx9@ds151677-a0.mlab.com:51677,ds151677-a1.mlab.com:51677/email-tiger?replicaSet=rs-ds151677',
+    (err, database) => {
+        if (err) return console.log(err);
+        db = database;
+});
 
 // Very basic HTML templates
 var pages = require('./pages');
@@ -44,30 +53,72 @@ app.get('/', function(req, res) {
 
 
 app.get('/hello', function(req, res) {
-    var transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-                user: 'sreid1234@gmail.com', // Your email id
-                pass: 'samuel93' // Your password
-            }
-        });
-
-    var mailOptions = {
-        from: '<sreid1234@gmail.com>', // sender address
-        to: 'sreid@teampareto.com', // list of receivers
-        subject: 'Hello', // Subject line
-        text: 'Hello world', // plaintext body
-        html: '<b>Hello world</b>' // html body
-    };
-
-    transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-            return console.log(error);
-        }
-        console.log('Message sent: ' + info.response);
-    });
+    var token = req.session.access_token;
+    var email = req.session.email;
+    if (token === undefined || email === undefined) {
+        console.log('/sync called while not logged in');
+        res.redirect('/');
+        return;
+    }
     res.render('pages/hello');
 });
+
+app.post('/quotes', (req, res) => {
+
+    if (req.body.email === "")
+    {
+        // need to add another template to handle this error
+        res.redirect('/hello');
+    }
+
+    if (req.body.setting === undefined)
+    {
+        // need to add another template to handle this error
+        res.redirect('/hello');
+    }
+
+    else if (req.body.setting.length == 2)
+    {
+        // need to add another template to handle this error
+        res.redirect('/hello');
+    }
+
+    else {
+
+        var path;
+        db.collection('email', function(err, collection) {
+            collection.find({ email: req.body.email }).toArray(function(err, results) {
+                path = results;
+                var secondCheck = path[0];
+
+                if (secondCheck === undefined) {
+                    console.log("where my dawgs at");
+                     db.collection('email').save(req.body, (err, result) => {
+                         if (err) return console.log(err);
+
+                         else if (req.body.setting == 'false') {
+                             res.redirect('/hello');
+                         }
+
+                         else {
+                             res.redirect('/sync');
+                         }
+                     });
+                }
+
+                else {
+                    if (req.body.setting == 'false') {
+                        res.redirect('/hello');
+                    }
+
+                    else {
+                        res.redirect('/sync');
+                    }
+                }
+            });
+        });
+    }
+    });
 
 app.get('/authorize', function(req, res) {
   var authCode = req.query.code;
@@ -490,7 +541,7 @@ app.get('/sync', function(req, res) {
 
             var mailOptions = {
                 from: '<unread@email-tiger.com>', // sender address
-                to: 'sreid@teampareto.com', // list of receivers
+                to: email, // list of receivers
                 subject: 'Email Tiger', // Subject line
                 //text: JSON.stringify(unReadEmails), // plaintext body
                 // text: allTogetherNow,
@@ -504,8 +555,8 @@ app.get('/sync', function(req, res) {
                 console.log('Message sent: ' + info.response);
             });
 
-            //res.write('Success!');
-            res.write('<h1>Success!</h1>');
+            // need to create custom template for when user sucessfully sends email
+            res.redirect('/hello');
             //return;
           }
       });
@@ -540,124 +591,3 @@ app.get('/sync', function(req, res) {
  // });
 
 });
-
-app.get('/viewitem', function(req, res) {
-  var itemId = req.query.id;
-  var access_token = req.session.access_token;
-  var email = req.session.email;
-
-  if (itemId === undefined || access_token === undefined) {
-    res.redirect('/');
-    return;
-  }
-
-  var select = {
-    '$select': 'Subject,Attendees,Location,Start,End,IsReminderOn,ReminderMinutesBeforeStart'
-  };
-
-  var getEventParameters = {
-    token: access_token,
-    eventId: itemId,
-    odataParams: select
-  };
-
-  outlook.calendar.getEvent(getEventParameters, function(error, event) {
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    else {
-      res.send(pages.itemDetailPage(email, event));
-    }
-  });
-});
-
-app.get('/updateitem', function(req, res) {
-  var itemId = req.query.eventId;
-  var access_token = req.session.access_token;
-
-  if (itemId === undefined || access_token === undefined) {
-    res.redirect('/');
-    return;
-  }
-
-  var newSubject = req.query.subject;
-  var newLocation = req.query.location;
-
-  console.log('UPDATED SUBJECT: ', newSubject);
-  console.log('UPDATED LOCATION: ', newLocation);
-
-  var updatePayload = {
-    Subject: newSubject,
-    Location: {
-      DisplayName: newLocation
-    }
-  };
-
-  var updateEventParameters = {
-    token: access_token,
-    eventId: itemId,
-    update: updatePayload
-  };
-
-  outlook.calendar.updateEvent(updateEventParameters, function(error, event) {
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    else {
-      res.redirect('/viewitem?' + querystring.stringify({ id: itemId }));
-    }
-  });
-});
-
-app.get('/deleteitem', function(req, res) {
-  var itemId = req.query.id;
-  var access_token = req.session.access_token;
-
-  if (itemId === undefined || access_token === undefined) {
-    res.redirect('/');
-    return;
-  }
-
-  var deleteEventParameters = {
-    token: access_token,
-    eventId: itemId
-  };
-
-  outlook.calendar.deleteEvent(deleteEventParameters, function(error, event) {
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    else {
-      res.redirect('/sync');
-    }
-  });
-});
-
-// // Start the server
-// var https = require('https');
-// var fs = require('fs');
-//
-// var options = {
-//    key: fs.readFileSync('./key.pem', 'utf8'),
-//    cert: fs.readFileSync('./cert.crt', 'utf8')
-// };
-//
-// https.createServer(options, app).listen(3000, function () {
-//    console.log('Started!');
-// });
-
-// Start the server
-// var https = require('https');
-// var fs = require('fs');
-//
-// var options = {
-//    key: fs.readFileSync('./key.pem', 'utf8'),
-//    cert: fs.readFileSync('./server.crt', 'utf8')
-// };
-//
-// https.createServer(options, app).listen(3000, function () {
-//    console.log('Started!');
-// });

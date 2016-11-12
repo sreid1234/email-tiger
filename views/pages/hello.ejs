@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <title>Email Tiger</title>
+    <link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.min.css">
+    <link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.components.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.css">
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+</head>
+ <body>
+<div id="main-content" class="ms-Grid">
+      <div class="ms-Grid-row">
+        <div id="title-banner" class="ms-font-su">Email Tiger</div>
+      </div>
+      <div id="body-content" class="ms-Grid-row">
+
+          <form name="myForm" action="/quotes" method="POST">
+              <div class="ms-TextField">
+                  <label class="ms-Label">Enter your email</label>
+                  <input type="text" name="email" class="ms-TextField-field" value="" style="width: 200px;"/>
+                  <!--<button type="submit" class="ms-Button ms-Button--primary">
+                    <span class="ms-Button-labprinel">Submit</span>
+                </button>-->
+               </div>
+    </div>
+
+    <div id="body-content" class="ms-Grid-row" style="padding-top: 15px;">
+
+        <!--<form action="/yoda" method="POST">-->
+           <div class="ms-Toggle">
+              <span class="ms-Toggle-description">Turn Email Tiger On or Off</span>
+              <span>On<input type="checkbox" name="setting" value="true"/>
+            <span>Off<input type="checkbox" name="setting" value="false"/>
+            <button type="submit" class="ms-Button ms-Button--primary">
+              <span class="ms-Button-labprinel">Submit</span>
+          </button>
+          </div>
+      </form>
+
+      </div>
+
+      <div id="body-content" class="ms-Grid-row" style="padding-top: 15px;">
+          <a href="/">
+              <button class="ms-Button ms-Button--primary">
+                  <span class="ms-Button-labprinel">Logout</span>
+              </button>
+          </a>
+
+
+    </div>
+
+  </body>
+  </html>

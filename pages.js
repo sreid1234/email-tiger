@@ -26,19 +26,11 @@ var buttonRow = '<div class="ms-Grid-row">' +
   '</div>' +
   '<div class="ms-Grid-row">' +
     '<div class="ms-Grid-col ms-u-sm4">' +
-      '<a class="ms-Button ms-Button--primary" href="/sync"><span class="ms-Button-label">Load emails</span></a>' +
-    '</div>' +
-    '<div class="ms-Grid-col ms-u-sm4">' +
-      '<a class="ms-Button ms-Button--primary" href="/refreshtokens"><span class="ms-Button-label">Refresh tokens</span></a>' +
+      '<a class="ms-Button ms-Button--primary" href="/hello"><span class="ms-Button-label">Settings</span></a>' +
     '</div>' +
     '<div class="ms-Grid-col ms-u-sm4">' +
       '<a class="ms-Button ms-Button--primary" href="/logout"><span class="ms-Button-label">Logout</span></a>' +
-    '</div>' +
-    '<div class="ms-TextField">' +
-        '<label class="ms-Label">Subject</label>' +
-        '<input name="subject" class="ms-TextField-field" value=" "/>' +
-    ' </div>'+
-  '</div>';
+    '</div>';
 
 function extractId(change) {
   return change.id.match(/'([^']+)'/)[1];
