@@ -65,13 +65,7 @@ app.get('/hello', function(req, res) {
 
 app.post('/quotes', (req, res) => {
 
-    if (req.body.email === "")
-    {
-        // need to add another template to handle this error
-        res.redirect('/hello');
-    }
-
-    if (req.body.setting === undefined)
+    if ((req.body.email === "") || (req.body.setting === undefined))
     {
         // need to add another template to handle this error
         res.redirect('/hello');
