@@ -7,7 +7,8 @@
     <link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.min.css">
     <link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.components.min.css">
     <link type="text/css" rel="stylesheet" href="styles/app.css">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 </head>
  <body>
 <div id="main-content" class="ms-Grid">
@@ -33,7 +34,7 @@
               <span class="ms-Toggle-description">Turn Email Tiger On or Off</span>
               <span>On<input type="checkbox" name="setting" value="true"/>
             <span>Off<input type="checkbox" name="setting" value="false"/>
-            <button type="submit" class="ms-Button ms-Button--primary">
+            <button type="submit" class="ms-Button ms-Button--primary" id="sendbtn">
               <span class="ms-Button-labprinel">Submit</span>
           </button>
           </div>
@@ -50,6 +51,14 @@
 
 
     </div>
+
+    <script>
+        $('#sendbtn').click(function(){
+            this.form.submit();
+            this.disabled=true;
+            this.innerHTML='<i class="fa fa-spinner fa-spin"></i> Sending…';
+        });
+    </script>
 
   </body>
   </html>
