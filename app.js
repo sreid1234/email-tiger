@@ -189,11 +189,7 @@ app.get('/sync', function(req, res) {
   outlook.base.setPreferredTimeZone('Eastern Standard Time');
 
   // Use the syncUrl if available
-  var requestUrl = req.session.syncUrl;
-  if (requestUrl === undefined) {
-    // Calendar sync works on the CalendarView endpoint
-    requestUrl = outlook.base.apiEndpoint() + '/me/messages';
-  }
+  requestUrl = outlook.base.apiEndpoint() + '/me/messages';
 
   // Set up our sync window from midnight on the current day to
   // midnight 7 days from now.
@@ -226,6 +222,7 @@ app.get('/sync', function(req, res) {
   var apiOptions = {
     url: requestUrl,
     token: token,
+    folderId: 'inbox',
     //headers: headers,
     //this needs to be odataParams
     odataParams: queryParams
