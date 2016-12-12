@@ -56,14 +56,15 @@ app.get('/hello', function(req, res) {
     var token = req.session.access_token;
     var email = req.session.email;
     if (token === undefined || email === undefined) {
-        console.log('/sync called while not logged in');
-        res.redirect('/');
-        return;
+      console.log('/sync called while not logged in');
+      res.redirect('/');
+      return;
     }
+
     // shows priority emails from Mongo
     var path;
     db.collection('people').find({ email: req.session.email }).toArray(function(err, result) {
-        path = results;
+        path = result;
         var secondCheck = path[0];
 
         if (secondCheck === undefined) {
@@ -72,8 +73,9 @@ app.get('/hello', function(req, res) {
 
         else {
             res.render('./pages/other.ejs', {people : result});
-        }
-    });
+            }
+        });
+
 });
 
 app.post('/quotes', (req, res) => {

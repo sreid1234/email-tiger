@@ -15,7 +15,7 @@
      <div class="container">
          <div id="main-content" class="ms-Grid">
              <div class="row">
-                 <div class="col-md-6">
+                 <div class="col-sm-6">
 
                       <div class="ms-Grid-row">
                         <div id="title-banner" class="ms-font-su">Email Tiger</div>
@@ -58,13 +58,14 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <ul class="list-group">
-                            <% for(var i=0; i<people.length; i++) {%>
-                                <li class="list-group-item">
-                                    <span><%= people[i].names %></span>
-                                </li
-                        </ul>
+                    <div class="col-sm-6" style="padding-top: 100px;">
+                        <form name="myForm2" action="/yoda" method="POST">
+                            <label class="ms-Label">Add priority email</label>
+                            <input type="text" name="names" class="ms-TextField-field" value="" style="width: 200px;"/>
+                            <button type="submit" class="ms-Button ms-Button--primary">
+                                <span class="ms-Button-labprinel">Submit</span>
+                            </button>
+                        </form>
                     </div>
 
 
