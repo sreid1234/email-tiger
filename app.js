@@ -61,12 +61,18 @@ app.get('/hello', function(req, res) {
         return;
     }
     // shows priority emails from Mongo
+    var path;
     db.collection('people').find({ email: req.session.email }).toArray(function(err, result) {
-        if (err) return console.log(err);
-        // renders hello.ejs
-        console.log(result[0].names[1]);
+        path = results;
+        var secondCheck = path[0];
 
-        res.render('./pages/other.ejs', {people : result});
+        if (secondCheck === undefined) {
+            res.render('pages/hello');
+        }
+
+        else {
+            res.render('./pages/other.ejs', {people : result});
+        }
     });
 });
 
