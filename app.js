@@ -632,6 +632,7 @@ app.get('/sync', function(req, res) {
             // Get priority emails from DB //
             collection = db.collection('people');
             var arrayOfPriorityEmailsActual;
+            var noPriorityEmails = [];
             var lengthfinalFormArray = finalFormArray.length;
 
 
@@ -691,7 +692,13 @@ app.get('/sync', function(req, res) {
 
                 // user has no priority emails
                 else {
-                    return finalFormArray;
+                    var n = 0;
+                    while (n < finalFormArray.length)
+                    {
+                        newFinalFormArray2.push(finalFormArray[n]);
+                        n ++;
+                    }
+                    return newFinalFormArray2;
                 }
 
             }
@@ -710,18 +717,64 @@ app.get('/sync', function(req, res) {
             var newFinalFormArray2 = [];
 
 
-            function wrapPriorityCallback(arrayOfPriorityEmailsActual, finalFormArray, newFinalFormArray2) {
+            function wrapPriorityCallback(arrayOfPriorityEmailsActual, finalFormArray, newFinalFormArray2, noPriorityEmails) {
 
                 getPriorityEmails(function(result){
 
-                    if (result !== undefined) {
-                        console.log(result);
-                        arrayOfPriorityEmailsActual = result;
-                        rankPriorityEmails(finalFormArray, arrayOfPriorityEmailsActual, newFinalFormArray2);
+                    //console.log(result.length);
+
+                    if (result.length === 0) {
+                        console.log("What's up");
+                        console.log(noPriorityEmails);
+                        rankPriorityEmails(finalFormArray, noPriorityEmails, newFinalFormArray2);
 
                     }
 
+                    else if (result !== undefined) {
+                        // console.log(result);
+                        // console.log("Righttt here");
+                        arrayOfPriorityEmailsActual = result;
+                        rankPriorityEmails(finalFormArray, arrayOfPriorityEmailsActual, newFinalFormArray2);
+                    }
+
+                    else {
+                        // console.log("down here");
+                        rankPriorityEmails(finalFormArray, noPriorityEmails, newFinalFormArray2);
+                    }
+                    // var newFinalFormArray = [];
+                    //
+                    // x = 0;
+                    //
+                    // var whichArrayCheck = false;
+                    //
+                    // if (newFinalFormArray2.length > 50) {
+                    //     while (x < 50) {
+                    //         newFinalFormArray.push(newFinalFormArray2[x]);
+                    //         x ++;
+                    //     }
+                    //     whichArrayCheck = true;
+                    // }
+
                     var lengthFinalFormArray2 = newFinalFormArray2.length;
+                    // var lengthNewFinalFormArray = newFinalFormArray.length;
+                    // var w = 0;
+                    //
+                    // function whatToSend(finalFormArray, w, lengthfinalFormArray) {
+                    //     var theMessage = '';
+                    //     while (w != lengthfinalFormArray) {
+                    //         theMessage += finalFormArray[w];
+                    //         w++;
+                    //         return theMessage;
+                    //     }
+                    // }
+                    //
+                    // if (whichArrayCheck === false) {
+                    //     whatToSend(newFinalFormArray2, w, lengthFinalFormArray2);
+                    // }
+                    //
+                    // else {
+                    //     whatToSend(newFinalFormArray, w, lengthNewFinalFormArray);
+                    // }
 
                     var theMessage = 'Your Daily Digest' + '<br>' + '<br>';
 
@@ -764,11 +817,25 @@ app.get('/sync', function(req, res) {
                         console.log('Message sent: ' + info.response);
                     });
 
+                    // // call the Outlook API each day
+                    // var rule = new schedule.RecurrenceRule();
+                    // //rule.dayOfWeek = [0, new schedule.Range(1, 6)];
+                    // //rule.hour = 0;
+                    // //rule.minute = 2;
+                    // rule.second = 10;
+                    //
+                    //
+                    //   var j = schedule.scheduleJob(rule, function(){
+                    //       console.log("---------");
+                    //       console.log("Scheduler has been called!");
+                    //       console.log("---------");
+                    //       checkIfShouldMakeCall(email);
+                    //  });
+
                 });
             }
 
-            wrapPriorityCallback(arrayOfPriorityEmailsActual, finalFormArray, newFinalFormArray2);
-
+            wrapPriorityCallback(arrayOfPriorityEmailsActual, finalFormArray, newFinalFormArray2, noPriorityEmails);
         }
     });
 
