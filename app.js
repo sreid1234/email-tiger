@@ -26,7 +26,7 @@ var authHelper = require('./authHelper');
 
 // Configure express
 // Set up rendering of static files
-app.use(express.static('static'));
+app.use('/static', express.static(__dirname + '/static'));
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');

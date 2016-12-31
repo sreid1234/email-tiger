@@ -4,6 +4,7 @@ var baseHtml = '<html>' +
   '<head>' +
     '<meta content="IE=edge" http-equiv="X-UA-Compatible">' +
     '<meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1">' +
     '<title>%title%</title>'  +
     '<link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.min.css">' +
     '<link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.components.min.css">' +

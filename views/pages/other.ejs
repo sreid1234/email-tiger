@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <title>Email Tiger</title>
     <link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.min.css">
@@ -10,51 +11,163 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+    <style>
+    @media only screen and (min-width: 768px) {
+
+        #main-image {
+            height: 200px;
+        }
+
+        #mobile {
+
+            padding-bottom: 20px;
+            text-align: center;
+        }
+
+        #mobile3 {
+
+            color: green;
+        }
+
+        #mobile4 {
+
+            color: red;
+        }
+
+        #box {
+            transform: scale(1.25);
+        }
+
+        #sendbtn3 {
+
+            margin: 5px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        #sendbtn {
+
+            font-size: 14px;
+            margin-left: 10px;
+
+        }
+
+        #sendbtn2 {
+
+            background-color:grey;
+            font-size: 14px;
+
+        }
+
+        #textfield {
+            width: 300px;
+        }
+
+        .container {
+            width: 90%;
+            border-radius: 15px;
+        }
+
+
+    }
+
+
+    @media only screen and (max-width: 768px) {
+
+        #main-image {
+            height: 100px;
+        }
+
+        #mobile {
+
+            padding-bottom: 20px;
+            text-align: center;
+        }
+
+        #mobile3 {
+
+            color: green;
+        }
+
+        #mobile4 {
+
+            color: red;
+        }
+
+        #box {
+            transform: scale(1.25);
+        }
+
+        #sendbtn3 {
+
+            margin: 5px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        #sendbtn {
+
+            font-size: 14px;
+            margin-left: 10px;
+
+        }
+
+        #sendbtn2 {
+
+            background-color:grey;
+            font-size: 14px;
+
+        }
+
+        .container {
+            width: 90%;
+            border-radius: 15px;
+        }
+
+    }
+    </style>
+
+
 </head>
  <body>
-     <div class="container">
-         <div id="main-content" class="ms-Grid">
-             <div class="row">
-                 <div class="col-sm-6">
+     <div class="space" style="height: 30px;"></div>
 
-                      <div class="ms-Grid-row">
-                        <div id="title-banner" class="ms-font-su">Email Tiger</div>
-                      </div>
-                      <div id="body-content" class="ms-Grid-row">
-
-                          <form name="myForm" action="/quotes" method="POST">
-                              <div class="ms-TextField">
-                                  <!--<label class="ms-Label">Enter your email</label>
-                                  <input type="text" name="email" class="ms-TextField-field" value="" style="width: 200px;"/>
-                                  <button type="submit" class="ms-Button ms-Button--primary">
-                                    <span class="ms-Button-labprinel">Submit</span>
-                                </button>-->
-                               </div>
+     <div class="container" style="background-color: #f6f6f6;">
+             <div class="row" style="padding-top: 20px; padding-bottom: 20px;">
+                 <div class="col-md-12">
+                     <p style="text-align: center;">
+                         <img id="main-image" src="/static/img/email-tiger-logo.png">
+                    </p>
+                     <div class="row">
+                         <div class="col-sm-10">
+                         <p id="directions">Email Tiger will send you an email digest of your unread emails and even prioritize them for you. <a href="#">Learn how it works.</a></p>
                         </div>
 
-                        <div id="body-content" class="ms-Grid-row" style="padding-top: 15px;">
+                     </div>
+                </div>
+            </div>
 
-                            <!--<form action="/yoda" method="POST">-->
-                               <div class="ms-Toggle">
-                                  <span class="ms-Toggle-description">Turn Email Tiger On or Off</span>
-                                  <span>On<input type="checkbox" name="setting" value="true"/>
-                                <span>Off<input type="checkbox" name="setting" value="false"/>
-                                <button type="submit" class="ms-Button ms-Button--primary" id="sendbtn">
-                                  <span class="ms-Button-labprinel">Submit</span>
-                              </button>
-                              </div>
-                          </form>
+            <div class="row">
+                <div class="col-md-12 col-lg-6">
+                          <form name="myForm" action="/quotes" method="POST">
+                              <div class="ms-TextField">
 
-                          </div>
+                               </div>
 
-                          <div id="body-content" class="ms-Grid-row" style="padding-top: 15px;">
-                              <a href="/">
-                                  <button class="ms-Button ms-Button--primary">
-                                      <span class="ms-Button-labprinel">Logout</span>
-                                  </button>
+
+                               <!--<div class="ms-Toggle">-->
+                                   <span id="mobile2" class="ms-Toggle-description">Turn Email Tiger On or Off:</span>
+                                   <span id="mobile3">On <input id="box" type="checkbox" name="setting" value="true"/>
+                                    <span id="mobile4">Off <input id="box" type="checkbox" name="setting" value="false"/>
+
+                                    <button type="submit" class="btn btn-primary btn-lg" id="sendbtn">Send Email</button>
+                              <!--</div>-->
+                            </form>
+
+                              <a href="/" class="btn btn-primary btn-lg" role="button" id="sendbtn2">
+                                  Logout
                               </a>
-
-
                         </div>
                     </div>
 
@@ -76,18 +189,15 @@
                         </ul>
 
                         <form name="myForm2" action="/yoda" method="POST">
-                            <label class="ms-Label">Add priority email</label>
-                            <input type="text" name="names" class="ms-TextField-field" value="" style="width: 200px;"/>
-                            <button type="submit" class="ms-Button ms-Button--primary">
-                                <span class="ms-Button-labprinel">Submit</span>
-                            </button>
+                            <label class="ms-Label" id="mobile5">Add priority email:</label>
+                            <input type="text" name="names" class="ms-TextField-field" value="" id="textfield" />
+                            <button type="submit" class="btn btn-primary btn-lg" id="sendbtn3">Add Email</button>
                         </form>
                     </div>
 
 
                 </div>
             </div>
-        </div>
 
     <script>
         $('#sendbtn').click(function(){
