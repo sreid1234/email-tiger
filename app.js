@@ -776,7 +776,7 @@ app.get('/sync', function(req, res) {
                     //     whatToSend(newFinalFormArray, w, lengthNewFinalFormArray);
                     // }
 
-                    var theMessage = 'Your Daily Digest' + '<br>' + '<br>';
+                    var theMessage = 'Email Tiger - Your Recent Unread Emails' + '<br>' + '<br>';
 
                     // need to limit the number of unread emails included in one digest
                     var w = 0;
