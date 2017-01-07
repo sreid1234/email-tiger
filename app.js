@@ -110,7 +110,7 @@ app.post('/quotes', (req, res) => {
                          }
 
                          else {
-                             res.redirect('/sync');
+                             res.redirect('/sync-first');
                          }
                      });
                 }
@@ -118,12 +118,12 @@ app.post('/quotes', (req, res) => {
                 else {
                     if (req.body.setting == 'false') {
                         collection.update( {email: req.session.email}, {email:req.session.email,  setting: false});
-                        res.redirect('/sync');
+                        res.redirect('/sync-first');
                     }
 
                     else {
                         collection.update( {email: req.session.email}, {email:req.session.email,  setting: true});
-                        res.redirect('/sync');
+                        res.redirect('/sync-first');
                     }
                 }
             });
@@ -845,6 +845,438 @@ app.get('/sync', function(req, res) {
     });
 
     }
+
+
+
+
+            // THIS CALLBACK WORKS //
+            collection = db.collection('email');
+
+            function compareDB(cb) {
+                var path;
+                var secondCheck;
+                collection.find({ email: email }).toArray(function(err, results) {
+                    path = results;
+                    var secondCheck = path[0].setting;
+
+                    cb(secondCheck);
+                });
+            }
+
+
+            function checkIfShouldMakeCall(email) {
+
+                var tnt = compareDB(function(result){
+                    //console.log(result);
+                    if (result === true) {
+                        console.log("Get money");
+                        makeCall(email);
+                    }
+                });
+
+            }
+
+            checkIfShouldMakeCall(email);
+            res.redirect('/hello');
+
+
+});
+
+app.get('/sync-first', function(req, res) {
+  var token = req.session.access_token;
+  var email = req.session.email;
+  if (token === undefined || email === undefined) {
+    console.log('/sync called while not logged in');
+    res.redirect('/');
+    return;
+  }
+
+  function makeCall (email) {
+
+  // Set the endpoint to API v2
+  outlook.base.setApiEndpoint('https://outlook.office.com/api/v2.0');
+
+  // Set the user's email as the anchor mailbox
+  //outlook.base.setAnchorMailbox(req.session.email);
+  // Variable changed to make scheduler work overnight //
+  outlook.base.setAnchorMailbox(email);
+  // Set the preferred time zone
+  outlook.base.setPreferredTimeZone('Eastern Standard Time');
+
+  // Use the syncUrl if available
+  // var requestUrl = req.session.syncUrl;
+  // if (requestUrl === undefined) {
+    // Calendar sync works on the CalendarView endpoint
+    requestUrl = outlook.base.apiEndpoint() + '/me/messages';
+    //requestUrl = outlook.base.apiEndpoint() + '/me/MailFolders/deleteditems/messages';
+  // }
+
+  // Set up our sync window from midnight on the current day to
+  // midnight 7 days from now.
+  var startDate = moment().startOf('day');
+  var endDate = moment(startDate).add(7, 'days');
+  // The start and end date are passed as query parameters
+  var params = {
+    startDateTime: startDate.toISOString(),
+    endDateTime: endDate.toISOString()
+  };
+
+  var queryParams = {
+  '$select': 'Subject,ReceivedDateTime,From,Body,IsRead,WebLink',
+  '$orderby': 'ReceivedDateTime desc',
+  //top controls the number of messages that are brought in by API call
+  '$top': 75
+    };
+
+  // Set the required headers for sync
+  var headers = {
+    Prefer: [
+      // Enables sync functionality
+      //'outlook.allow-unsafe-html'
+    //   'odata.track-changes',
+    //   // Requests only 5 emails per response
+    // Limiting results using $top will prevent odata.maxpagesize preference from being applied
+        'odata.maxpagesize=5'
+    ]
+  };
+
+  var apiOptions = {
+    url: requestUrl,
+    token: token,
+    folderId: 'inbox',
+    //headers: headers,
+    //this needs to be odataParams
+    odataParams: queryParams
+  };
+
+
+
+  //function makeCall (apiOptions)
+
+    outlook.mail.getMessages(apiOptions, function(error, response) {
+        if (error) {
+          console.log(JSON.stringify(error));
+          res.send(JSON.stringify(error));
+        }
+        else {
+
+            var yolo = response['@odata.context'];
+            var eachEmail = response['value'];
+
+            //console.log(yolo);
+            //console.log(eachEmail);
+
+            //console.log(eachEmail.length);
+
+            var stoppingPoint = eachEmail.length;
+
+            //console.log(insideEmail);
+            //console.log(insideEmail2);
+
+            var i = 0;
+            var unReadEmails = [];
+
+            function checkIsRead (eachEmail, stoppingPoint, unReadEmails, i) {
+                while (i != eachEmail.length) {
+                    if (eachEmail[i]['IsRead'] === false) {
+                        unReadEmails.push(eachEmail[i]);
+                        i += 1;
+                    }
+                    else {
+                        i += 1;
+                    }
+
+                }
+                return unReadEmails;
+            }
+
+            checkIsRead(eachEmail, stoppingPoint, unReadEmails, i);
+
+            //console.log(unReadEmails);
+
+            // variables for makeGetBodyArray function
+            var getBodyArray = [];
+            var lengthUnReadEmails = unReadEmails.length;
+            var f = 0;
+
+            function makeGetBodyArray(getBodyArray, lengthUnReadEmails, unReadEmails, f) {
+                while (f != lengthUnReadEmails) {
+                    getBodyArray.push(unReadEmails[f]['Body']);
+                    f++;
+                }
+                return getBodyArray;
+            }
+
+            makeGetBodyArray(getBodyArray, lengthUnReadEmails, unReadEmails, f);
+            // provided as example for how to access Content
+
+
+            // variables for makeGetContentArray function
+            var getContentArray = [];
+            var lengthGetBodyArray = getBodyArray.length;
+            var g = 0;
+
+            function makeGetContentArray(getContentArray, lengthGetBodyArray, getBodyArray, g) {
+                while (g != lengthGetBodyArray) {
+                    getContentArray.push(getBodyArray[g]['Content']);
+                    g++;
+                }
+                return getContentArray;
+            }
+
+            makeGetContentArray(getContentArray, lengthGetBodyArray, getBodyArray, g);
+
+            //console.log(getContentArray);
+
+
+            // variable for makeGetSubjectArray function
+            var getSubjectArray = [];
+            var h = 0;
+
+            function makeGetSubjectArray(getSubjectArray,lengthUnReadEmails, unReadEmails, h) {
+                while (h != lengthUnReadEmails) {
+                    getSubjectArray.push(unReadEmails[h]['Subject']);
+                    h++;
+                }
+                return getSubjectArray;
+            }
+
+            makeGetSubjectArray(getSubjectArray, lengthUnReadEmails, unReadEmails, h);
+
+            // provided as example for how to access WebLink
+            // pulls directly from unReadEmails (no nesting)
+
+            //console.log(getSubjectArray);
+
+            // variable for makeGetSubjectArray function
+            var getWebLinkArray = [];
+            var m = 0;
+
+            function makeGetWebLinkArray(getWebLinkArray,lengthUnReadEmails, unReadEmails, m) {
+                while (m != lengthUnReadEmails) {
+                    //console.log(unReadEmails[m]['WebLink']);
+                    getWebLinkArray.push(unReadEmails[m]['WebLink']);
+                    m++;
+                }
+                return getWebLinkArray;
+            }
+
+            makeGetWebLinkArray(getWebLinkArray, lengthUnReadEmails, unReadEmails, m);
+
+            //console.log(getWebLinkArray[0]);
+
+
+            // variables for makeGetFromArray function
+            var getFromArray = [];
+            var c = 0;
+
+            function makeGetFromArray(getFromArray, lengthUnReadEmails, unReadEmails, c) {
+                while (c != lengthUnReadEmails) {
+                    //console.log(unReadEmails[c]['From']);
+                    getFromArray.push(unReadEmails[c]['From']);
+                    c++;
+                }
+                return getFromArray;
+            }
+
+            makeGetFromArray(getFromArray, lengthUnReadEmails, unReadEmails, c);
+
+            //console.log(getFromArray[0]);
+
+            // variables for makeGetNameArray function
+            var getNameArray = [];
+            var lengthGetFromArray = getFromArray.length;
+            var d = 0;
+
+            function makeGetNameArray(getNameArray, lengthGetFromArray, getFromArray, d) {
+                while (d != lengthGetFromArray) {
+                    getNameArray.push(getFromArray[d]['EmailAddress']);
+                    d++;
+                }
+                return getNameArray;
+            }
+
+            makeGetNameArray(getNameArray, lengthGetFromArray, getFromArray, d);
+
+
+            // variables for makeGetEmailArray function
+            var getNameArrayLength = getNameArray.length;
+            var getEmail = [];
+            var e = 0;
+
+            function makeGetEmailArray(getNameArray, getNameArrayLength, getEmail, e) {
+                while (e != getNameArrayLength) {
+                    if (getNameArray[e]['Address'] !== undefined) {
+                        getEmail.push(getNameArray[e]['Address']);
+                    }
+                    else {
+                        getEmail.push('N/A');
+                    }
+                    e++;
+                }
+                return getEmail;
+            }
+
+            makeGetEmailArray(getNameArray, getNameArrayLength, getEmail, e);
+
+            //console.log(getEmail);
+
+            var k = 0;
+            var t = 0;
+
+            function findDomainName(getDomain, k, t, getEmail) {
+
+                if (getEmail[k] !== 'N/A') {
+
+                    while (getEmail[k][t] != '@') {
+                        t++;
+                    }
+                    var theEmailDomain = getEmail[k].substring(k, getEmail[k].length);
+                    return theEmailDomain;
+                }
+
+                else {
+                    return ('no-domain');
+                }
+            }
+
+
+            var getEmailLength = getEmail.length;
+            var domainArray = [];
+
+            function getDomainNames(getEmailLength, k, t, getEmail)
+            {
+                while (k != getEmailLength) {
+                    var getDomain1 = findDomainName(getDomain1, k, t, getEmail);
+                    domainArray.push(getDomain1);
+                    k++;
+                }
+                return domainArray;
+            }
+
+            getDomainNames(getEmailLength, k, t, getEmail);
+
+            // //Need to error check for undefined json objects
+            // if (getEmail[k] !== undefined) {
+            //     var getDomain1 = findDomainName(getDomain1, k, t, getEmail);
+            // }
+            // //console.log(getBody);
+
+            // console.log(domainArray[0]);
+            //
+            // console.log(getInnerBody[160]);
+            //
+            // console.log(getEmail[1]);
+
+            // bring getContentArray in here instead of getInnerBody
+            // think of getContentArray as array of getInnerBodies
+
+            var lengthGetContentArray = getContentArray.length;
+            p = 0;
+            finalFormArray = [];
+            function grabBodyTextWrapper(getContentArray, lengthGetContentArray, p, finalFormArray, getWebLinkArray, getSubjectArray, getEmail) {
+
+                while (p !== lengthGetContentArray) {
+
+                    // var bodyAndBeyond = getInnerBody.substring(160, getInnerBody.length);
+                    var bodyAndBeyond = getContentArray[p].substring(160, getContentArray[p].length);
+                    var r = 0;
+                    function grabBodyText (bodyAndBeyond) {
+                        while (bodyAndBeyond[r] != '<') {
+                            r++;
+                        }
+                        if ((bodyAndBeyond[r+1] === '/') && (bodyAndBeyond[r+3] === 'o')) {
+                            return bodyAndBeyond.substring(0, r);
+                        }
+                        else {
+                            return bodyAndBeyond.substring(0, r);
+                        }
+                    }
+
+                var allTheBodyText = grabBodyText(bodyAndBeyond);
+
+                //console.log(allTheBodyText);
+
+                // configuring the message
+
+                var getSubjectWithLink = getSubjectArray[p].link(getWebLinkArray[p]);
+
+                var getSender = getEmail[p];
+
+                var subject = "Subject: ";
+
+                var subjectBold = subject.bold();
+
+                var sender = "Sender: ";
+
+                var senderBold = sender.bold();
+
+                // information to forward on to user
+                if (getSender !== 'N/A') {
+                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender + "<br>" + allTheBodyText;
+                    finalFormArray.push(allTogetherNow);
+                    p++;
+                }
+                else {
+                    var allTogetherNow2 = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender;
+                    //could include emails sent from no sender
+                    // finalFormArray.push(allTogetherNow2);
+                    p++;
+                }
+            }
+            return finalFormArray;
+        }
+
+        grabBodyTextWrapper(getContentArray, lengthGetContentArray, p, finalFormArray, getWebLinkArray, getSubjectArray, getEmail);
+
+        var theMessage = 'Your Daily Digest' + '<br>' + '<br>';
+
+        var w = 0;
+        while (w != finalFormArray.length) {
+            theMessage += finalFormArray[w];
+            theMessage += '<br>';
+            theMessage += '<br>';
+            w++;
+        }
+
+        if (finalFormArray.length === 0) {
+            theMessage += 'You have no unread emails.';
+        }
+
+        //var whatToPrint = finalFormArray[w] + "<br>" + finalFormArray[w+1]
+
+        //var sendTheMessage = whatToSend(finalFormArray, w, lengthfinalFormArray);
+
+        var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                    //user: 'sreid1234@gmail.com',
+                    // pass: 'samuel93'
+                    user: 'unread@email-tiger.com',
+                    pass: 'SamTiger9'
+                }
+            });
+
+        var mailOptions = {
+            from: '<unread@email-tiger.com>', // sender address
+            to: email, // list of receivers
+            subject: 'Email Tiger', // Subject line
+            //text: JSON.stringify(unReadEmails), // plaintext body
+            // text: allTogetherNow,
+            html: theMessage, // html body
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if(error){
+                return console.log(error);
+            }
+            console.log('Message sent: ' + info.response);
+        });
+
+    }
+});
+
+}
 
 
 
