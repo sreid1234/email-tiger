@@ -9,29 +9,41 @@ var baseHtml = '<html>' +
     '<link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.min.css">' +
     '<link type="text/css" rel="stylesheet" href="//appsforoffice.microsoft.com/fabric/1.0/fabric.components.min.css">' +
     '<link type="text/css" rel="stylesheet" href="styles/app.css">' +
+    '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">' +
+    '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">' +
   '</head>' +
   '<body>' +
-    '<div id="main-content" class="ms-Grid">' +
-      '<div class="ms-Grid-row">' +
-        '<div id="title-banner" class="ms-font-su">Email Tiger</div>' +
-      '</div>' +
-      '<div id="body-content" class="ms-Grid-row">' +
+        '<div class="container">' +
+            '<div class="row" style="padding-top:20px;">' +
+            '<div class="col-sm-12">' +
+                '<p style="text-align: center;">' +
+                    '<img src="./static/img/email-tiger-logo.png" style="height:120px">' +
+                '</p>'+
+            '</div>' +
+            '</div>' +
+      '<div id="body-content" class="row">' +
         '%body%' +
+        '</div>' +
       '</div>' +
-    '</div>' +
-  '</body>' +
 '</html>';
 
-var buttonRow = '<div class="ms-Grid-row">' +
-    '<div id="user-email" class="ms-font-l">Signed in as: %email%</div>' +
-  '</div>' +
-  '<div class="ms-Grid-row">' +
-    '<div class="ms-Grid-col ms-u-sm4">' +
-      '<a class="ms-Button ms-Button--primary" href="/hello"><span class="ms-Button-label">Settings</span></a>' +
+var buttonRow = '<div class="container">' +
+    '<div class="row" style="padding-bottom:10px;">' +
+        '<div class="col-sm-12">' +
+            '<p style="text-align: center;font-size:16px;""><a href="#">Learn How Email Tiger Works</a></p>' +
+            '<p style="text-align: center;font-size:10px;">Signed in as: %email%</p>' +
+        '</div>' +
     '</div>' +
-    '<div class="ms-Grid-col ms-u-sm4">' +
-      '<a class="ms-Button ms-Button--primary" href="/logout"><span class="ms-Button-label">Logout</span></a>' +
+  '<div class="row">' +
+    '<div class="col-sm-12">' +
+        '<p style="text-align: center;">' +
+            '<a class="btn btn-primary btn-lg" role="button" href="/hello" style="margin-right:10px;">Use</a>' +
+            '<a class="btn btn-primary btn-lg" style="background-color:grey;" role="button" href="/logout">Logout</a>' +
+        '</p>' +
+    '</div>' +
+    '</div>' +
     '</div>';
+
 
 function extractId(change) {
   return change.id.match(/'([^']+)'/)[1];
@@ -94,13 +106,21 @@ function getAttendeesStrings(attendees) {
 
 module.exports = {
   loginPage: function(signinUrl) {
-    var html = '<a id="signin-button" class="ms-Button ms-Button--primary" href="' + signinUrl + '"><span class="ms-Button-label">Click here to sign in</span></a>';
+    var html = '<div class="container">' +
+        '<div class="row">' +
+            '<div class="col-sm-12">' +
+                '<p style="text-align: center;">' +
+                    '<a class="btn btn-primary btn-lg" role="button" href="' + signinUrl + '">Sign in</a>' +
+                '</p>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
 
     return baseHtml.replace('%title%', 'Login').replace('%body%', html);
   },
 
   loginCompletePage: function(userEmail) {
-    var html = '<div class="ms-Grid">';
+    var html = '<div>';
     html += buttonRow.replace('%email%', userEmail);
     html += '</div>';
 

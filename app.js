@@ -353,10 +353,6 @@ app.get('/sync', function(req, res) {
 
             var stoppingPoint = eachEmail.length;
 
-            var insideEmail = eachEmail[0]['Subject'];
-
-            var insideEmail2 = eachEmail[1]['IsRead'];
-
             //console.log(insideEmail);
             //console.log(insideEmail2);
 
@@ -381,10 +377,6 @@ app.get('/sync', function(req, res) {
 
             //console.log(unReadEmails);
 
-            var getBody = unReadEmails[1]['Body'];
-
-            var getBody2 = unReadEmails[2]['Body'];
-
             // variables for makeGetBodyArray function
             var getBodyArray = [];
             var lengthUnReadEmails = unReadEmails.length;
@@ -400,7 +392,7 @@ app.get('/sync', function(req, res) {
 
             makeGetBodyArray(getBodyArray, lengthUnReadEmails, unReadEmails, f);
             // provided as example for how to access Content
-            var getInnerBody = getBody['Content'];
+
 
             // variables for makeGetContentArray function
             var getContentArray = [];
@@ -419,9 +411,6 @@ app.get('/sync', function(req, res) {
 
             //console.log(getContentArray);
 
-            // provided as example for how to access Subject
-            // pulls directly from unReadEmails (no nesting)
-            var getSubject = unReadEmails[1]['Subject'];
 
             // variable for makeGetSubjectArray function
             var getSubjectArray = [];
@@ -439,7 +428,6 @@ app.get('/sync', function(req, res) {
 
             // provided as example for how to access WebLink
             // pulls directly from unReadEmails (no nesting)
-            var getLink = unReadEmails[1]['WebLink'];
 
             //console.log(getSubjectArray);
 
@@ -460,8 +448,6 @@ app.get('/sync', function(req, res) {
 
             //console.log(getWebLinkArray[0]);
 
-
-            var getFrom = unReadEmails[0]['From'];
 
             // variables for makeGetFromArray function
             var getFromArray = [];
@@ -495,8 +481,6 @@ app.get('/sync', function(req, res) {
 
             makeGetNameArray(getNameArray, lengthGetFromArray, getFromArray, d);
 
-            var getName = getFrom['EmailAddress'];
-            var getEmail = getName['Address'];
 
             // variables for makeGetEmailArray function
             var getNameArrayLength = getNameArray.length;
@@ -708,8 +692,20 @@ app.get('/sync', function(req, res) {
                 var secondCheck;
                 collection.find({ email: email}).toArray(function(err, results) {
                     path = results;
-                    var secondCheck = path[0].names;
-                    cb(secondCheck);
+                    //secondCheck = path[0].names;
+                    secondCheck = path[0];
+                    if (secondCheck === undefined)
+                    {
+                        console.log("hey there");
+                        cb(secondCheck);
+                    }
+
+                    else {
+                        thirdCheck = secondCheck.names;
+                        console.log(thirdCheck);
+                        cb(thirdCheck);
+                    }
+
                 });
             }
 
@@ -723,24 +719,28 @@ app.get('/sync', function(req, res) {
 
                     //console.log(result.length);
 
-                    if (result.length === 0) {
+                    if (result === undefined) {
+                        rankPriorityEmails(finalFormArray, noPriorityEmails, newFinalFormArray2);
+                    }
+
+                    else if (result.length === 0) {
                         console.log("What's up");
                         console.log(noPriorityEmails);
                         rankPriorityEmails(finalFormArray, noPriorityEmails, newFinalFormArray2);
 
                     }
 
-                    else if (result !== undefined) {
+                    else {
                         // console.log(result);
                         // console.log("Righttt here");
                         arrayOfPriorityEmailsActual = result;
                         rankPriorityEmails(finalFormArray, arrayOfPriorityEmailsActual, newFinalFormArray2);
                     }
 
-                    else {
-                        // console.log("down here");
-                        rankPriorityEmails(finalFormArray, noPriorityEmails, newFinalFormArray2);
-                    }
+                    // else {
+                    //     // console.log("down here");
+                    //     rankPriorityEmails(finalFormArray, noPriorityEmails, newFinalFormArray2);
+                    // }
                     // var newFinalFormArray = [];
                     //
                     // x = 0;
@@ -785,6 +785,10 @@ app.get('/sync', function(req, res) {
                         theMessage += '<br>';
                         theMessage += '<br>';
                         w++;
+                    }
+
+                    if (lengthFinalFormArray2 === 0) {
+                        theMessage += 'You have no unread emails.';
                     }
 
                     //var whatToPrint = finalFormArray[w] + "<br>" + finalFormArray[w+1]
@@ -836,10 +840,15 @@ app.get('/sync', function(req, res) {
             }
 
             wrapPriorityCallback(arrayOfPriorityEmailsActual, finalFormArray, newFinalFormArray2, noPriorityEmails);
+
         }
     });
 
     }
+
+
+
+
             // THIS CALLBACK WORKS //
             collection = db.collection('email');
 
