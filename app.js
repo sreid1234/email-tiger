@@ -308,7 +308,7 @@ app.get('/sync', function(req, res) {
   '$select': 'Subject,ReceivedDateTime,From,Body,IsRead,WebLink',
   '$orderby': 'ReceivedDateTime desc',
   //top controls the number of messages that are brought in by API call
-  '$top': 75
+  '$top': 100
     };
 
   // Set the required headers for sync
