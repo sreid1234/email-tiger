@@ -843,7 +843,7 @@ app.get('/sync', function(req, res) {
                     //     whatToSend(newFinalFormArray, w, lengthNewFinalFormArray);
                     // }
 
-                    var theMessage = 'Your Daily Digest' + '<br>' + '<br>';
+                    var theMessage = 'Your Recent Unread Emails' + '<br>' + '<br>';
 
                     // need to limit the number of unread emails included in one digest
                     var w = 0;
@@ -1297,7 +1297,7 @@ app.get('/sync-first', function(req, res) {
 
         grabBodyTextWrapper(getContentArray, lengthGetContentArray, p, finalFormArray, getWebLinkArray, getSubjectArray, getEmail);
 
-        var theMessage = 'Email Tiger - Your Recent Unread Emails' + '<br>' + '<br>';
+        var theMessage = 'Your Recent Unread Emails' + '<br>' + '<br>';
 
         var w = 0;
         while (w != finalFormArray.length) {
