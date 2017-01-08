@@ -78,23 +78,15 @@ app.get('/hello', function(req, res) {
 
 });
 
-
 app.post('/quotes', (req, res) => {
 
-    // console.log(req.session.email);
-    // console.log(req.body.email);
-    // console.log(req.body.setting);
-
-    //if ((req.body.email === "") || (req.body.setting === undefined))
     if (req.body.setting === undefined)
     {
-        // need to add another template to handle this error
         res.redirect('/hello');
     }
 
     else if (req.body.setting.length == 2)
     {
-        // need to add another template to handle this error
         res.redirect('/hello');
     }
 
@@ -110,28 +102,19 @@ app.post('/quotes', (req, res) => {
                     console.log("where my dawgs at");
                      db.collection('email').save({email : req.session.email, setting:req.body.setting}, (err, result) => {
                          if (err) return console.log(err);
-
-                         else if (req.body.setting == 'false') {
-                             res.redirect('/hello');
-                         }
-
-                         else {
-                             res.redirect('/sync-first');
-                         }
                      });
                 }
 
-                else {
-                    if (req.body.setting == 'false') {
-                        collection.update( {email: req.session.email}, {email:req.session.email,  setting: false});
-                        res.redirect('/sync-first');
-                    }
-
-                    else {
-                        collection.update( {email: req.session.email}, {email:req.session.email,  setting: true});
-                        res.redirect('/sync-first');
-                    }
+                if (req.body.setting == 'false') {
+                    collection.update( {email: req.session.email}, {email:req.session.email,  setting: false});
+                    res.redirect('/sync-first');
                 }
+
+                else {
+                    collection.update( {email: req.session.email}, {email:req.session.email,  setting: true});
+                    res.redirect('/sync-first');
+                }
+
             });
         });
 
