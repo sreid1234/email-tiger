@@ -30,7 +30,7 @@ var baseHtml = '<html>' +
 var buttonRow = '<div class="container">' +
     '<div class="row" style="padding-bottom:10px;">' +
         '<div class="col-sm-12">' +
-            '<p style="text-align: center;font-size:16px;""><a href="#">Learn How Email Tiger Works</a></p>' +
+            '<p style="text-align: center;font-size:16px;""><a href="https://medium.com/@support_57283/how-it-works-85287d4bb313#.92puw9dpn" target="_blank">Learn How Email Tiger Works</a></p>' +
             '<p style="text-align: center;font-size:10px;">Signed in as: %email%</p>' +
         '</div>' +
     '</div>' +
