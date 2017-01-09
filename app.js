@@ -51,6 +51,11 @@ app.get('/', function(req, res) {
   res.send(pages.loginPage(authHelper.getAuthUrl()));
 });
 
+// Error page
+app.get('/error', function(req, res) {
+    res.render('./pages/error.ejs')
+})
+
 
 app.get('/hello', function(req, res) {
     var token = req.session.access_token;
@@ -385,8 +390,7 @@ app.get('/sync', function(req, res) {
 
     outlook.mail.getMessages(apiOptions, function(error, response) {
         if (error) {
-          console.log(JSON.stringify(error));
-          res.send(JSON.stringify(error));
+            res.redirect('/error');
         }
         else {
 
@@ -1006,8 +1010,7 @@ app.get('/sync-first', function(req, res) {
 
     outlook.mail.getMessages(apiOptions, function(error, response) {
         if (error) {
-          console.log(JSON.stringify(error));
-          res.send(JSON.stringify(error));
+            res.redirect('/error');
         }
         else {
 
