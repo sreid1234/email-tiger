@@ -648,7 +648,7 @@ app.get('/sync', function(req, res) {
 
                 // information to forward on to user
                 if (getSender !== 'N/A') {
-                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender;
+                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender + "<br>";
                     finalFormArray.push(allTogetherNow);
                     p++;
                 }
@@ -1261,7 +1261,7 @@ app.get('/sync-first', function(req, res) {
 
                 // information to forward on to user
                 if (getSender !== 'N/A') {
-                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender;
+                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender + "<br>";
                     finalFormArray.push(allTogetherNow);
                     p++;
                 }
