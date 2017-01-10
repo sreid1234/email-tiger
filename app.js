@@ -51,10 +51,10 @@ app.get('/', function(req, res) {
   res.send(pages.loginPage(authHelper.getAuthUrl()));
 });
 
-// Error page
-app.get('/error', function(req, res) {
-    res.render('./pages/error.ejs')
-})
+// // Error page
+// app.get('/error', function(req, res) {
+//     res.render('./pages/error.ejs')
+// })
 
 
 app.get('/hello', function(req, res) {
@@ -390,7 +390,8 @@ app.get('/sync', function(req, res) {
 
     outlook.mail.getMessages(apiOptions, function(error, response) {
         if (error) {
-            res.redirect('/error');
+            console.log(JSON.stringify(error));
+            res.send(JSON.stringify(error));
         }
         else {
 
@@ -616,7 +617,7 @@ app.get('/sync', function(req, res) {
                     var bodyAndBeyond = getContentArray[p].substring(160, getContentArray[p].length);
                     var r = 0;
                     function grabBodyText (bodyAndBeyond) {
-                        while (bodyAndBeyond[r] != '<') {
+                        while ((bodyAndBeyond[r] != '<') && (r < 10000)) {
                             r++;
                         }
                         if ((bodyAndBeyond[r+1] === '/') && (bodyAndBeyond[r+3] === 'o')) {
@@ -647,7 +648,7 @@ app.get('/sync', function(req, res) {
 
                 // information to forward on to user
                 if (getSender !== 'N/A') {
-                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender + "<br>" + allTheBodyText;
+                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender;
                     finalFormArray.push(allTogetherNow);
                     p++;
                 }
@@ -1010,22 +1011,15 @@ app.get('/sync-first', function(req, res) {
 
     outlook.mail.getMessages(apiOptions, function(error, response) {
         if (error) {
-            res.redirect('/error');
+            console.log(JSON.stringify(error));
+            res.send(JSON.stringify(error));
         }
         else {
 
             var yolo = response['@odata.context'];
             var eachEmail = response['value'];
 
-            //console.log(yolo);
-            //console.log(eachEmail);
-
-            //console.log(eachEmail.length);
-
             var stoppingPoint = eachEmail.length;
-
-            //console.log(insideEmail);
-            //console.log(insideEmail2);
 
             var i = 0;
             var unReadEmails = [];
@@ -1236,7 +1230,7 @@ app.get('/sync-first', function(req, res) {
                     var bodyAndBeyond = getContentArray[p].substring(160, getContentArray[p].length);
                     var r = 0;
                     function grabBodyText (bodyAndBeyond) {
-                        while (bodyAndBeyond[r] != '<') {
+                        while ((bodyAndBeyond[r] != '<') && (r < 10000)) {
                             r++;
                         }
                         if ((bodyAndBeyond[r+1] === '/') && (bodyAndBeyond[r+3] === 'o')) {
@@ -1267,7 +1261,7 @@ app.get('/sync-first', function(req, res) {
 
                 // information to forward on to user
                 if (getSender !== 'N/A') {
-                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender + "<br>" + allTheBodyText;
+                    var allTogetherNow = subjectBold + getSubjectWithLink + "<br>" + senderBold + getSender;
                     finalFormArray.push(allTogetherNow);
                     p++;
                 }
